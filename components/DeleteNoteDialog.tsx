@@ -28,14 +28,14 @@ export function DeleteNoteDialog() {
     <AlertDialog open={deleteDialogOpen} onOpenChange={closeDeleteDialog}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Note</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className='text-lg'>Delete Note</AlertDialogTitle>
+          <AlertDialogDescription className='text-base'>
             Are you sure you want to delete this note? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex justify-end gap-3">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+          <AlertDialogCancel className='!text-base'>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90 !text-base">
             Delete
           </AlertDialogAction>
         </div>

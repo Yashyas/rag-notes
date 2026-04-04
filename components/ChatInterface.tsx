@@ -54,7 +54,7 @@ export function ChatInterface() {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-4">
           {chatMessages.length === 0 ? (
             <div className="flex items-center justify-center h-full text-center text-muted-foreground py-8">
@@ -80,7 +80,7 @@ export function ChatInterface() {
                       : 'bg-accent text-foreground'
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-base">{message.content}</p>
                   <span className="text-xs opacity-60 mt-1 block">
                     {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',
@@ -106,7 +106,7 @@ export function ChatInterface() {
       </ScrollArea>
 
       {/* Input */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t safe-area-bottom shrink-0">
         <div className="flex gap-2">
           <Input
             value={messageInput}
@@ -114,15 +114,15 @@ export function ChatInterface() {
             onKeyPress={handleKeyPress}
             placeholder="Ask about your notes..."
             disabled={isLoading}
-            className="text-sm"
+            className="!text-base"
           />
           <Button
             onClick={handleSendMessage}
             disabled={!messageInput.trim() || isLoading}
-            size="sm"
+            size="default"
             className="gap-2"
           >
-            <PaperPlaneTiltIcon className="w-4 h-4" />
+            <PaperPlaneTiltIcon className="w-6 h-6" />
           </Button>
         </div>
       </div>

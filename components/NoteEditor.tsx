@@ -95,19 +95,19 @@ export function NoteEditor() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Note title..."
-              className="text-2xl font-bold h-auto py-2 px-0 border-0 focus-visible:ring-0 placeholder:text-muted-foreground"
+              className="!text-lg font-bold h-auto py-2 px-0 border-0 focus-visible:ring-0 placeholder:text-muted-foreground"
             />
           </div>
 
           {/* Tags section */}
-          <div className="p-4 border-b space-y-3">
+          <div className="p-4 border-b space-y-3 ">
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="gap-1">
+                <Badge key={tag} variant="secondary" className="gap-1 bg-primary text-sm">
                   {tag}
                   <button
                     onClick={() => handleRemoveTag(tag)}
-                    className="hover:text-destructive"
+                    className="hover:text-destructive "
                   >
                     <XIcon className="w-3 h-3" />
                   </button>
@@ -121,10 +121,10 @@ export function NoteEditor() {
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
                 placeholder="Add tag and press Enter..."
-                className="text-sm"
+                className="!text-base"
               />
               <Button
-                size="sm"
+                size="default"
                 variant="outline"
                 onClick={handleAddTag}
                 className="gap-1"
@@ -139,7 +139,7 @@ export function NoteEditor() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Start typing your note..."
-            className="flex-1 border-0 focus-visible:ring-0 resize-none"
+            className="flex-1 border-0 focus-visible:ring-0 resize-none !text-base"
           />
 
           {/* Save button footer */}
@@ -147,7 +147,7 @@ export function NoteEditor() {
             <Button
               onClick={handleSave}
               disabled={!isDirty}
-              className="gap-2"
+              className="gap-2 text-lg"
             >
               Save
             </Button>
@@ -156,11 +156,12 @@ export function NoteEditor() {
       ) : (
         <div className="flex flex-col items-center justify-center h-full text-center p-4">
           <Card className="p-8 max-w-sm bg-accent">
-            <h3 className="text-lg font-semibold mb-2">No Note Selected</h3>
-            <p className="text-muted-foreground mb-4">
+            <h3 className="text-lg font-bold mb-2">No Note Selected</h3>
+            <p className="text-muted-foreground mb-4 text-sm">
               Select a note from the list to view or edit it, or create a new one.
             </p>
             <Button
+              className='text-base'
               onClick={() => {
                 const newNote: Note = {
                   id: Date.now().toString(),

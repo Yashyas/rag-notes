@@ -33,12 +33,12 @@ export function TaskList() {
       {/* Search Header */}
       <div className="p-4 border-b">
         <div className="relative">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6 text-muted-foreground" />
           <Input
             placeholder="Search notes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 "
           />
         </div>
       </div>
@@ -64,7 +64,7 @@ export function TaskList() {
                 <div className="space-y-2">
                   {/* Title */}
                   <h3
-                    className={`font-semibold truncate ${
+                    className={`font-semibold truncate text-lg ${
                       selectedNoteId === note.id
                         ? 'text-primary-foreground'
                         : 'text-foreground'
@@ -75,7 +75,7 @@ export function TaskList() {
 
                   {/* Content Preview */}
                   <p
-                    className={`text-sm line-clamp-2 ${
+                    className={`text-base line-clamp-2 ${
                       selectedNoteId === note.id
                         ? 'text-primary-foreground/80'
                         : 'text-muted-foreground'
@@ -91,7 +91,7 @@ export function TaskList() {
                         <Badge
                           key={tag}
                           variant={selectedNoteId === note.id ? 'default' : 'secondary'}
-                          className="text-xs"
+                          className="text-xs bg-primary"
                         >
                           {tag}
                         </Badge>
@@ -105,9 +105,9 @@ export function TaskList() {
                   )}
 
                   {/* Footer: Date and Delete */}
-                  <div className="flex items-center justify-between pt-2 border-t border-current opacity-50">
+                  <div className="flex items-center justify-between pt-2 border-t border-current opacity-50 ">
                     <span
-                      className={`text-xs ${
+                      className={`text-sm ${
                         selectedNoteId === note.id
                           ? 'text-primary-foreground'
                           : 'text-muted-foreground'
@@ -118,17 +118,12 @@ export function TaskList() {
                         day: 'numeric',
                       })}
                     </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-6 w-6 p-0"
-                      onClick={(e) => {
+                    
+                      <TrashIcon className="w-6 h-6 transform-all hover:text-destructive hover:rotate-12"   onClick={(e) => {
                         e.stopPropagation();
                         openDeleteDialog(note.id);
-                      }}
-                    >
-                      <TrashIcon className="w-4 h-4" />
-                    </Button>
+                      }}/>
+                   
                   </div>
                 </div>
               </Card>

@@ -26,7 +26,7 @@ export function NotesAppLayout() {
   return (
     <>
       {/* Desktop Layout */}
-      <div className="hidden lg:flex h-screen gap-0 bg-background">
+      <div className="hidden lg:flex h-screen gap-0 bg-background ">
         {/* TaskList - 20vw */}
         <div className="w-[20vw] border-r flex flex-col">
           <TaskList />
@@ -44,40 +44,40 @@ export function NotesAppLayout() {
       </div>
 
       {/* Mobile Layout */}
-      <div className="lg:hidden flex flex-col h-screen bg-background">
+      <div className="lg:hidden flex flex-col h-dvh bg-background ">
         {/* Content Area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto " >
           {renderMobileContent()}
         </div>
 
         {/* Bottom Tab Navigation */}
-        <div className="border-t bg-background p-2 flex gap-1 justify-around">
+        <div className="safe-area-bottom border-t bg-background p-2 flex gap-1 justify-around  shrink-0">
           <Button
             variant={activeMobileTab === 'tasks' ? 'default' : 'ghost'}
-            size="sm"
+            size="lg"
             onClick={() => setActiveMobileTab('tasks')}
             className="flex-1 gap-2"
           >
-            <ListChecksIcon className="w-4 h-4" />
-            <span className="hidden sm:inline">Tasks</span>
+            <ListChecksIcon className="w-8 h-8" />
+            <span className="hidden sm:inline text-base">Tasks</span>
           </Button>
           <Button
             variant={activeMobileTab === 'notes' ? 'default' : 'ghost'}
-            size="sm"
+            size="lg"
             onClick={() => setActiveMobileTab('notes')}
             className="flex-1 gap-2"
           >
-            <FileTextIcon className="w-4 h-4" />
-            <span className="hidden sm:inline">Notes</span>
+            <FileTextIcon className="w-8 h-8" />
+            <span className="hidden sm:inline text-base">Notes</span>
           </Button>
           <Button
             variant={activeMobileTab === 'chat' ? 'default' : 'ghost'}
-            size="sm"
+            size="lg"
             onClick={() => setActiveMobileTab('chat')}
             className="flex-1 gap-2"
           >
-            <ChatCircleIcon className="w-4 h-4" />
-            <span className="hidden sm:inline">Chat</span>
+            <ChatCircleIcon className="w-8 h-8" />
+            <span className="hidden sm:inline text-base">Chat</span>
           </Button>
         </div>
       </div>
