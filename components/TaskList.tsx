@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNotesStore } from '@/lib/store/notesStore';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -8,9 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MagnifyingGlassIcon, TrashIcon } from '@phosphor-icons/react';
+import { fetchNotes } from '@/app/actions/notes';
 
 export function TaskList() {
   const notes = useNotesStore((state) => state.notes);
+  const setNotes = useNotesStore((state) => state.setNotes);
   const searchQuery = useNotesStore((state) => state.searchQuery);
   const selectedNoteId = useNotesStore((state) => state.selectedNoteId);
   const setSearchQuery = useNotesStore((state) => state.setSearchQuery);
@@ -27,6 +29,19 @@ export function TaskList() {
         note.content.toLowerCase().includes(query)
     );
   }, [notes, searchQuery]);
+
+    useEffect(()=>{
+    const getNotes = async () =>{
+    try{
+          const notes = await fetchNotes()
+          setNotes(notes.data ?? [])
+          console.log(notes)
+    }catch(error){
+        console.log(error)
+    }
+    }
+    getNotes()
+  },[])
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -85,7 +100,7 @@ export function TaskList() {
                   </p>
 
                   {/* Tags */}
-                  {note.tags.length > 0 && (
+                  {note.tags?.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {note.tags.slice(0, 2).map((tag) => (
                         <Badge
@@ -113,7 +128,7 @@ export function TaskList() {
                           : 'text-muted-foreground'
                       }`}
                     >
-                      {new Date(note.lastUpdated).toLocaleDateString('en-US', {
+                      {new Date(note.updatedAt).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
                       })}

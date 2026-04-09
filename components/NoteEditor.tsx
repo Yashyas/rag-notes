@@ -8,11 +8,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { PlusIcon, XIcon } from '@phosphor-icons/react';
+import { createNote , updateNoteDatabase } from '@/app/actions/notes';
 
 export function NoteEditor() {
   const selectedNoteId = useNotesStore((state) => state.selectedNoteId);
   const notes = useNotesStore((state) => state.notes);
-  const updateNote = useNotesStore((state) => state.updateNote);
+  const updateNoteFrontend = useNotesStore((state) => state.updateNote);
   const addNote = useNotesStore((state) => state.addNote);
 
   const selectedNote = notes.find((note) => note.id === selectedNoteId);
@@ -65,22 +66,30 @@ export function NoteEditor() {
   };
 
   const handleSave = async () => {
-    if (selectedNote) {
-      updateNote(selectedNote.id, {
+    if(!selectedNoteId) return 
+
+    if (selectedNoteId !== "tempnote") {
+      updateNoteFrontend(selectedNoteId, {
         title: title || 'Untitled',
         content,
         tags,
+        
       });
+     await  updateNoteDatabase(selectedNoteId,content,title,tags) 
     } else if (title || content || tags.length > 0) {
       const newNote: Note = {
-        id: Date.now().toString(),
+        id: "tempnote",
         title: title || 'Untitled',
         content,
         tags,
-        lastUpdated: new Date(),
+        updatedAt: new Date(),
         createdAt: new Date(),
       };
-      addNote(newNote);
+      updateNoteFrontend(newNote.id,newNote);
+      const createdNote = await createNote(content,title,tags)
+      if (createdNote?.data?.id) {
+    updateNoteFrontend(newNote.id, { id: createdNote.data.id }); 
+  }
     }
     setIsDirty(false);
   };
@@ -164,14 +173,15 @@ export function NoteEditor() {
               className='text-base'
               onClick={() => {
                 const newNote: Note = {
-                  id: Date.now().toString(),
+                  id: "tempnote",
                   title: 'New Note',
                   content: '',
                   tags: [],
-                  lastUpdated: new Date(),
+                  updatedAt: new Date(),
                   createdAt: new Date(),
                 };
                 addNote(newNote);
+                useNotesStore.getState().setSelectedNoteId(newNote.id) 
               }}
             >
               Create New Note

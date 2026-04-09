@@ -1,6 +1,6 @@
 export const EmbedService = {
 
-  async generateEmbedding(text: string): Promise<number[]> {
+  async generateEmbedding(data:string): Promise<number[]> {
     const response = await fetch(
       "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction",
       {
@@ -9,7 +9,7 @@ export const EmbedService = {
           Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ inputs: text }),
+        body: JSON.stringify({ inputs: data }),
       }
     );
 

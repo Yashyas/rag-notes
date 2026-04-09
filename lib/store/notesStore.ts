@@ -5,7 +5,7 @@ export interface Note {
   title: string;
   content: string;
   tags: string[];
-  lastUpdated: Date;
+  updatedAt: Date;
   createdAt: Date;
 }
 
@@ -54,7 +54,7 @@ export const useNotesStore = create<NotesStore>((set) => ({
       title: 'Welcome to Notes App',
       content: 'This is your first note. Click on other notes to view them, or create a new one!',
       tags: ['welcome', 'tutorial'],
-      lastUpdated: new Date(),
+      updatedAt: new Date(),
       createdAt: new Date(),
     },
     {
@@ -62,7 +62,7 @@ export const useNotesStore = create<NotesStore>((set) => ({
       title: 'Meeting Notes',
       content: 'Discussed project timeline and deliverables. Next meeting scheduled for next week.',
       tags: ['work', 'meeting'],
-      lastUpdated: new Date(Date.now() - 86400000),
+      updatedAt: new Date(Date.now() - 86400000),
       createdAt: new Date(Date.now() - 86400000),
     },
   ],

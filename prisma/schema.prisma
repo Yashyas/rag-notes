@@ -18,12 +18,13 @@ model Note {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title     String
   content   String   @db.Text
+  tags      String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Vector column (dimensions depend on your embedding model, e.g., 1536 for OpenAI)
   embedding Unsupported("vector(384)")?
 
-
+@@index([tags], map:"tags_idx")
 @@schema("public")
 }

@@ -10,15 +10,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { deleteNote } from '@/app/actions/notes';
 
 export function DeleteNoteDialog() {
   const deleteDialogOpen = useNotesStore((state) => state.deleteDialogOpen);
   const deleteTargetId = useNotesStore((state) => state.deleteTargetId);
-  const deleteNote = useNotesStore((state) => state.deleteNote);
+  const deleteNoteFrontend = useNotesStore((state) => state.deleteNote);
   const closeDeleteDialog = useNotesStore((state) => state.closeDeleteDialog);
 
   const handleDelete = () => {
     if (deleteTargetId) {
+      deleteNoteFrontend(deleteTargetId);
       deleteNote(deleteTargetId);
       closeDeleteDialog();
     }
