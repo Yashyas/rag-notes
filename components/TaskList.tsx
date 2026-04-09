@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MagnifyingGlassIcon, TrashIcon } from '@phosphor-icons/react';
+import { MagnifyingGlassIcon, PlusCircleIcon, TrashIcon } from '@phosphor-icons/react';
 import { fetchNotes } from '@/app/actions/notes';
 
 export function TaskList() {
@@ -45,6 +45,15 @@ export function TaskList() {
 
   return (
     <div className="flex flex-col h-full bg-background">
+
+         <div className='flex justify-between '>
+        <p className='text-lg font-bold ml-8 m-2'>Notes List</p>
+        <Button 
+        className='h-12 text-lg '
+        onClick={()=>{
+          setSelectedNoteId("tempnote")
+        }}><PlusCircleIcon/> New Note</Button>
+      </div>
       {/* Search Header */}
       <div className="p-4 border-b">
         <div className="relative">
