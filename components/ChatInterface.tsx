@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { PaperPlaneTiltIcon } from '@phosphor-icons/react';
+import { askQuestions } from '@/app/actions/chat';
 
 export function ChatInterface() {
   const chatMessages = useNotesStore((state) => state.chatMessages);
@@ -32,16 +33,20 @@ export function ChatInterface() {
     setIsLoading(true);
 
     // Simulate RAG response (stub for now)
-    setTimeout(() => {
+    const response = await askQuestions(messageInput)
+
+    const sourceslist = response.sources && response.sources.length > 0 ? `\n\n---\n**Sources:**\n${response.sources.map(s => `• ${s}`).join('\n')}`
+  : '';
+   
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: generateMockResponse(messageInput, notes),
+        content: `${response.answer}${sourceslist}`,
         timestamp: new Date(),
       };
       addChatMessage(assistantMessage);
       setIsLoading(false);
-    }, 800);
+  
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -80,7 +85,7 @@ export function ChatInterface() {
                       : 'bg-accent text-foreground'
                   }`}
                 >
-                  <p className="text-base">{message.content}</p>
+                  <div className="text-base whitespace-pre-wrap leading-relaxed">{message.content}</div>
                   <span className="text-xs opacity-60 mt-1 block">
                     {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',
@@ -130,14 +135,4 @@ export function ChatInterface() {
   );
 }
 
-// Mock RAG response generator (stub)
-function generateMockResponse(query: string, notes: any[]): string {
-  const responses = [
-    `I found ${notes.length} notes. Based on your query "${query}", here are the relevant notes...`,
-    `Searching through your notes for "${query}"... I found references to this topic in several notes.`,
-    `That's an interesting question! Looking at your notes, I can see you have information about "${query}".`,
-    `Based on your notes, I can help you with "${query}". Let me summarize the relevant information...`,
-  ];
 
-  return responses[Math.floor(Math.random() * responses.length)];
-}
