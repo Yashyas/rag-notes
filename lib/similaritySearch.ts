@@ -15,7 +15,7 @@ export interface SearchResult {
 export async function similaritySearch(vector: number[]) {
   const { data, error } = await supabaseVector.rpc('match_notes', {
     query_embedding: vector,
-    match_threshold: 0.4,
+    match_threshold: 0.1,
     match_count: 5,
   });
 
