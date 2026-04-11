@@ -88,6 +88,6 @@ export async function deleteNote(id :string) {
         })
         return {success:true , data:notes}
     } catch (error) {
-        return {success:false, error: "Couldn't fetch notes."}
+        return {success:false, error: "Couldn't delete notes."}
     }
 }

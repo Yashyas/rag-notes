@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { deleteNote } from '@/app/actions/notes';
+import { toast } from 'sonner';
 
 export function DeleteNoteDialog() {
   const deleteDialogOpen = useNotesStore((state) => state.deleteDialogOpen);
@@ -20,9 +21,26 @@ export function DeleteNoteDialog() {
 
   const handleDelete = () => {
     if (deleteTargetId) {
-      deleteNoteFrontend(deleteTargetId);
-      deleteNote(deleteTargetId);
+      
+      const promise = deleteNote(deleteTargetId);
+          // toast 
+      toast.promise(promise, {
+      loading: 'Deleting your note...',
+      success: (res) => {
+        if(res.success) {
+          deleteNoteFrontend(deleteTargetId);
+          return `Note deleted successfully!`;
+        }else{
+          throw new Error(res.error)
+        }
+      },
+      error: (err) => {
+        // 'err' is the caught error if deleteNote fails
+        return err?.message || 'Failed to delete note';
+      },
+    });
       closeDeleteDialog();
+      
     }
   };
 

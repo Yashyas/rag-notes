@@ -18,6 +18,7 @@ export function TaskList() {
   const setSearchQuery = useNotesStore((state) => state.setSearchQuery);
   const setSelectedNoteId = useNotesStore((state) => state.setSelectedNoteId);
   const openDeleteDialog = useNotesStore((state) => state.openDeleteDialog);
+  const setActiveMobileTab = useNotesStore((state) => state.setActiveMobileTab);
 
   const filteredNotes = useMemo(() => {
     if (!searchQuery.trim()) return notes;
@@ -49,9 +50,10 @@ export function TaskList() {
          <div className='flex justify-between '>
         <p className='text-lg font-bold ml-8 m-2'>Notes List</p>
         <Button 
-        className='h-12 text-lg '
+        className='h-12 text-lg mr-4 hover:bg-accent'
         onClick={()=>{
           setSelectedNoteId("tempnote")
+          setActiveMobileTab("notes")
         }}><PlusCircleIcon/> New Note</Button>
       </div>
       {/* Search Header */}
@@ -83,7 +85,10 @@ export function TaskList() {
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'hover:bg-accent'
                 }`}
-                onClick={() => setSelectedNoteId(note.id)}
+                onClick={() => {
+                  setSelectedNoteId(note.id)
+                  setActiveMobileTab("notes")
+                }}
               >
                 <div className="space-y-2">
                   {/* Title */}

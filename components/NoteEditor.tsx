@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useNotesStore, Note } from '@/lib/store/notesStore';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { PlusIcon, XIcon } from '@phosphor-icons/react';
-import { createNote , updateNoteDatabase } from '@/app/actions/notes';
+import { useState, useEffect, useMemo } from "react";
+import { useNotesStore, Note } from "@/lib/store/notesStore";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { PlusIcon, XIcon } from "@phosphor-icons/react";
+import { createNote, updateNoteDatabase } from "@/app/actions/notes";
+import { Toaster } from "./ui/sonner";
+import { toast } from "sonner";
 
 export function NoteEditor() {
   const selectedNoteId = useNotesStore((state) => state.selectedNoteId);
@@ -16,12 +18,23 @@ export function NoteEditor() {
   const updateNoteFrontend = useNotesStore((state) => state.updateNote);
   const addNote = useNotesStore((state) => state.addNote);
 
-  const selectedNote = notes.find((note) => note.id === selectedNoteId);
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const selectedNote = useMemo(() => {
+  if (selectedNoteId === "tempnote") {
+    return {
+      id: "tempnote",
+      title: "New note",
+      content: "",
+      tags: [],
+    };
+  }
+  return notes.find((note) => note.id === selectedNoteId);
+}, [selectedNoteId, notes]); 
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState('');
+  const [tagInput, setTagInput] = useState("");
   const [isDirty, setIsDirty] = useState(false);
 
   // Initialize form when selected note changes
@@ -30,13 +43,7 @@ export function NoteEditor() {
       setTitle(selectedNote.title);
       setContent(selectedNote.content);
       setTags(selectedNote.tags);
-      setTagInput('');
-      setIsDirty(false);
-    } else {
-      setTitle('');
-      setContent('');
-      setTags([]);
-      setTagInput('');
+      setTagInput("");
       setIsDirty(false);
     }
   }, [selectedNote]);
@@ -44,12 +51,12 @@ export function NoteEditor() {
   // Track if form is dirty
   useEffect(() => {
     if (!selectedNote) {
-      setIsDirty(title !== '' || content !== '' || tags.length > 0);
+      setIsDirty(title !== "" || content !== "" || tags.length > 0);
     } else {
       setIsDirty(
         title !== selectedNote.title ||
-        content !== selectedNote.content ||
-        JSON.stringify(tags) !== JSON.stringify(selectedNote.tags)
+          content !== selectedNote.content ||
+          JSON.stringify(tags) !== JSON.stringify(selectedNote.tags),
       );
     }
   }, [title, content, tags, selectedNote]);
@@ -57,7 +64,7 @@ export function NoteEditor() {
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
       setTags([...tags, tagInput.trim()]);
-      setTagInput('');
+      setTagInput("");
     }
   };
 
@@ -66,30 +73,63 @@ export function NoteEditor() {
   };
 
   const handleSave = async () => {
-    if(!selectedNoteId) return 
+    if (!selectedNoteId) return;
 
     if (selectedNoteId !== "tempnote") {
       updateNoteFrontend(selectedNoteId, {
-        title: title || 'Untitled',
+        title: title || "Untitled",
         content,
         tags,
-        
       });
-     await  updateNoteDatabase(selectedNoteId,content,title,tags) 
+      const promise= updateNoteDatabase(selectedNoteId, content, title, tags);
+
+        // toast 
+      toast.promise(promise, {
+      loading: 'Updating your note...',
+      success: (res) => {
+        if(res.success) return `Note updated successfully!`;
+        else throw new Error(res.error)
+      },
+      error: (err) => {
+        // 'err' is the caught error if updateNoteDatabase fails
+        return err?.message || 'Failed to create note';
+      },
+    });
+
     } else if (title || content || tags.length > 0) {
       const newNote: Note = {
         id: "tempnote",
-        title: title || 'Untitled',
+        title: title || "Untitled",
         content,
         tags,
         updatedAt: new Date(),
         createdAt: new Date(),
       };
-      updateNoteFrontend(newNote.id,newNote);
-      const createdNote = await createNote(content,title,tags)
+      updateNoteFrontend(newNote.id, newNote);
+
+      // promise for creating note 
+      const promise = createNote(content, title, tags);
+
+      // toast 
+      toast.promise(promise, {
+      loading: 'Creating your note...',
+      success: (res) => {
+        // 'data' is the resolved value (createdNote)
+        if (res.success){
+          return `Note "${res.data?.title}" created successfully!`;
+        }
+        else throw new Error(res.error)
+      },
+      error: (err) => {
+        // 'err' is the caught error if createNote fails
+        return err?.message || 'Failed to create note';
+      },
+    });
+      const createdNote = await promise
+
       if (createdNote?.data?.id) {
-    updateNoteFrontend(newNote.id, { id: createdNote.data.id }); 
-  }
+        addNote(createdNote.data);
+      }
     }
     setIsDirty(false);
   };
@@ -112,7 +152,11 @@ export function NoteEditor() {
           <div className="p-4 border-b space-y-3 ">
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="gap-1 bg-primary text-sm">
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  className="gap-1 bg-primary text-sm"
+                >
                   {tag}
                   <button
                     onClick={() => handleRemoveTag(tag)}
@@ -128,7 +172,7 @@ export function NoteEditor() {
               <Input
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
+                onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
                 placeholder="Add tag and press Enter..."
                 className="!text-base"
               />
@@ -167,21 +211,13 @@ export function NoteEditor() {
           <Card className="p-8 max-w-sm bg-accent">
             <h3 className="text-lg font-bold mb-2">No Note Selected</h3>
             <p className="text-muted-foreground mb-4 text-sm">
-              Select a note from the list to view or edit it, or create a new one.
+              Select a note from the list to view or edit it, or create a new
+              one.
             </p>
             <Button
-              className='text-base'
+              className="text-base"
               onClick={() => {
-                const newNote: Note = {
-                  id: "tempnote",
-                  title: 'New Note',
-                  content: '',
-                  tags: [],
-                  updatedAt: new Date(),
-                  createdAt: new Date(),
-                };
-                addNote(newNote);
-                useNotesStore.getState().setSelectedNoteId(newNote.id) 
+                useNotesStore.getState().setSelectedNoteId("tempnote");
               }}
             >
               Create New Note
