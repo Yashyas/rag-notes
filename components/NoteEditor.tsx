@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { PlusIcon, XIcon } from "@phosphor-icons/react";
 import { createNote, updateNoteDatabase } from "@/app/actions/notes";
-import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
 
 export function NoteEditor() {
