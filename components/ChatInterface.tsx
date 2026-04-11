@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { PaperPlaneTiltIcon } from '@phosphor-icons/react';
 import { askQuestions } from '@/app/actions/chat';
+import ReactMarkdown from 'react-markdown'
 
 export function ChatInterface() {
   const chatMessages = useNotesStore((state) => state.chatMessages);
@@ -85,7 +86,11 @@ export function ChatInterface() {
                       : 'bg-accent text-foreground'
                   }`}
                 >
-                  <div className="text-base whitespace-pre-wrap leading-relaxed">{message.content}</div>
+                  <div className="text-base leading-relaxed prose prose-sm dark:prose-invert">
+                    <ReactMarkdown>
+                      {message.content}
+                    </ReactMarkdown> 
+                    </div>
                   <span className="text-xs opacity-60 mt-1 block">
                     {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',

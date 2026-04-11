@@ -28,7 +28,7 @@ export function NotesAppLayout() {
       {/* Desktop Layout */}
       <div className="hidden lg:flex h-screen gap-0 bg-background ">
         {/* TaskList - 20vw */}
-        <div className="w-[20vw] border-r flex flex-col">
+        <div className="w-[20vw] border-r flex flex-col overflow-y-auto">
           <TaskList />
         </div>
 
