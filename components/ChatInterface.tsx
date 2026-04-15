@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNotesStore, ChatMessage } from '@/lib/store/notesStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,10 +12,17 @@ import ReactMarkdown from 'react-markdown'
 export function ChatInterface() {
   const chatMessages = useNotesStore((state) => state.chatMessages);
   const addChatMessage = useNotesStore((state) => state.addChatMessage);
-  const notes = useNotesStore((state) => state.notes);
 
   const [messageInput, setMessageInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+// useRef for auto scroll to end when new message arrive 
+  const scrollRef = useRef<HTMLDivElement>(null)
+  useEffect(()=>{
+    if (scrollRef.current){
+      scrollRef.current.scrollIntoView({behavior:'smooth'})
+    }
+  },[isLoading])
 
   const handleSendMessage = async () => {
     if (!messageInput.trim()) return;
@@ -58,7 +65,7 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-background ">
       {/* Messages */}
       <ScrollArea className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-4">
@@ -80,7 +87,7 @@ export function ChatInterface() {
                 }`}
               >
                 <div
-                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                  className={`max-w-lg lg:max-w-md px-4 py-2 rounded-lg ${
                     message.role === 'user'
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-accent text-foreground'
@@ -112,6 +119,8 @@ export function ChatInterface() {
               </div>
             </div>
           )}
+          {/* empty div for auto scrolling to bottom  */}
+          <div ref={scrollRef}/>
         </div>
       </ScrollArea>
 
