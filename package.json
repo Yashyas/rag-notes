@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^3.0.35",
     "@ai-sdk/openai": "^3.0.53",
     "@phosphor-icons/react": "^2.1.10",
     "@prisma/adapter-pg": "^7.6.0",
