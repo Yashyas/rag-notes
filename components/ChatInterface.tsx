@@ -12,6 +12,7 @@ import ReactMarkdown from 'react-markdown'
 export function ChatInterface() {
   const chatMessages = useNotesStore((state) => state.chatMessages);
   const addChatMessage = useNotesStore((state) => state.addChatMessage);
+  const selectedNoteId = useNotesStore((state) => state.selectedNoteId);
 
   const [messageInput, setMessageInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +42,7 @@ export function ChatInterface() {
     setIsLoading(true);
 
     // Simulate RAG response (stub for now)
-    const response = await askQuestions(messageInput)
+    const response = await askQuestions(messageInput,selectedNoteId??"")
 
     const sourceslist = response.sources && response.sources.length > 0 ? `\n\n---\n**Sources:**\n${response.sources.map(s => `• ${s}`).join('\n')}`
   : '';
