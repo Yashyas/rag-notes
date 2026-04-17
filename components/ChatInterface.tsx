@@ -43,14 +43,11 @@ export function ChatInterface() {
 
     // Simulate RAG response (stub for now)
     const response = await askQuestions(messageInput)
-
-    const sourceslist = response.sources && response.sources.length > 0 ? `\n\n---\n**Sources:**\n${response.sources.map(s => `• ${s}`).join('\n')}`
-  : '';
    
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: `${response.answer}${sourceslist}`,
+        content: `${response.answer}${response.sources}`,
         timestamp: new Date(),
       };
       addChatMessage(assistantMessage);
