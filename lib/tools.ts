@@ -2,6 +2,7 @@ import { z } from "zod";
 import { tool } from "ai";
 import { find_similar_notes } from "./similaritySearch";
 import { createNote, fetchNotes, updateNoteDatabase } from "@/app/actions/notes";
+import { webSearch } from "./webSearch";
 
 export const agentTools = {
     // Semantic search 
@@ -50,6 +51,19 @@ export const agentTools = {
     }),
     execute: async ({query}) => {
         const data = await fetchNotes()
+        return data
+    }
+  }),
+
+  // Web search 
+  webSearch: tool({
+    description:
+      "Search the web for current events, up-to-date facts, or general knowledge not found in local database.",
+    inputSchema: z.object({
+      query: z.string().describe("The exact search query to look up on the web."),
+    }),
+    execute: async ({query}) => {
+        const data = await webSearch(query)
         return data
     }
   }),

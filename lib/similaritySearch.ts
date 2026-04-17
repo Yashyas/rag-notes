@@ -27,6 +27,7 @@ export async function similaritySearch(vector: number[]) {
   });
 
   if (error) throw { "Semantic search error": String };
+  // console.log(data)
   return (data as SearchResult[]) ?? [];
 }
 
@@ -38,6 +39,7 @@ export async function keyWordSearch(query: string) {
   });
 
   if (error) throw { "Keyword search error": String };
+  // console.log(data)
   return data;
 }
 
@@ -77,6 +79,6 @@ export async function find_similar_notes(query: string) {
       relevanceScore: result.relevanceScore,
     }
   })
-
+  // console.log(finalRerankedNotes)
   return finalRerankedNotes;
 }
