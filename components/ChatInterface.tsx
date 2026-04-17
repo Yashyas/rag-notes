@@ -42,7 +42,7 @@ export function ChatInterface() {
     setIsLoading(true);
 
     // Simulate RAG response (stub for now)
-    const response = await askQuestions(messageInput,selectedNoteId??"")
+    const response = await askQuestions(messageInput)
 
     const sourceslist = response.sources && response.sources.length > 0 ? `\n\n---\n**Sources:**\n${response.sources.map(s => `• ${s}`).join('\n')}`
   : '';
