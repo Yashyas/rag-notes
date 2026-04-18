@@ -45,7 +45,7 @@ export function TaskList() {
   },[])
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full w-full bg-background">
 
          <div className='flex justify-between '>
         <p className='text-lg font-bold ml-8 m-2'>Notes List</p>
@@ -70,7 +70,7 @@ export function TaskList() {
       </div>
 
       {/* Notes List */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 ">
         <div className="p-4 space-y-3">
           {filteredNotes.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
@@ -80,7 +80,7 @@ export function TaskList() {
             filteredNotes.map((note) => (
               <Card
                 key={note.id}
-                className={`p-4 cursor-pointer transition-colors ${
+                className={`p-2 cursor-pointer transition-colors  ${
                   selectedNoteId === note.id
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'hover:bg-accent'

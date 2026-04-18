@@ -43,7 +43,7 @@ export async function keyWordSearch(query: string) {
   return data;
 }
 
-export async function find_similar_notes(query: string) {
+export async function find_similar_notes(query: string , topN:number = 3) {
   // generate embedding
   const embedding = await EmbedService.generateEmbedding(query);
   // search similar notes
@@ -69,7 +69,7 @@ export async function find_similar_notes(query: string) {
     model: "rerank-english-v3.0",
     query: query,
     documents: documentForReranking,
-    topN: 3,
+    topN: topN,
   });
 
   const finalRerankedNotes = rerankResponse.results.map(result =>{

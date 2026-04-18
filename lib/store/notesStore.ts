@@ -9,13 +9,6 @@ export interface Note {
   createdAt: Date;
 }
 
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-}
-
 interface NotesStore {
   notes: Note[];
   selectedNoteId: string | null;
@@ -23,7 +16,6 @@ interface NotesStore {
   activeMobileTab: 'tasks' | 'notes' | 'chat';
   deleteDialogOpen: boolean;
   deleteTargetId: string | null;
-  chatMessages: ChatMessage[];
 
   // Note actions
   setNotes: (notes: Note[]) => void;
@@ -42,9 +34,6 @@ interface NotesStore {
   openDeleteDialog: (noteId: string) => void;
   closeDeleteDialog: () => void;
 
-  // Chat actions
-  addChatMessage: (message: ChatMessage) => void;
-  setChatMessages: (messages: ChatMessage[]) => void;
 }
 
 export const useNotesStore = create<NotesStore>((set) => ({
@@ -71,7 +60,6 @@ export const useNotesStore = create<NotesStore>((set) => ({
   activeMobileTab: 'notes',
   deleteDialogOpen: false,
   deleteTargetId: null,
-  chatMessages: [],
 
   setNotes: (notes) => set({ notes }),
 
@@ -118,10 +106,4 @@ export const useNotesStore = create<NotesStore>((set) => ({
       deleteTargetId: null,
     }),
 
-  addChatMessage: (message) =>
-    set((state) => ({
-      chatMessages: [...state.chatMessages, message],
-    })),
-
-  setChatMessages: (messages) => set({ chatMessages: messages }),
 }));

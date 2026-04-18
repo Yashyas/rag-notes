@@ -3,10 +3,10 @@
 import { useNotesStore } from '@/lib/store/notesStore';
 import { TaskList } from './TaskList';
 import { NoteEditor } from './NoteEditor';
-import { ChatInterface } from './ChatInterface';
 import { DeleteNoteDialog } from './DeleteNoteDialog';
 import { Button } from '@/components/ui/button';
 import { ChatCircleIcon, FileTextIcon, ListChecksIcon } from '@phosphor-icons/react';
+import { StreamChatInterface } from './StreamChat';
 
 export function NotesAppLayout() {
   const activeMobileTab = useNotesStore((state) => state.activeMobileTab);
@@ -19,7 +19,7 @@ export function NotesAppLayout() {
       case 'notes':
         return <NoteEditor />;
       case 'chat':
-        return <ChatInterface />;
+        return <StreamChatInterface/>;
     }
   };
 
@@ -27,19 +27,19 @@ export function NotesAppLayout() {
     <>
       {/* Desktop Layout */}
       <div className="hidden lg:flex h-screen gap-0 bg-background ">
-        {/* TaskList - 20vw */}
-        <div className="w-[20vw] border-r flex flex-col overflow-y-auto">
+        {/* TaskList - 25vw */}
+        <div className="w-[25vw] border-r flex flex-col overflow-y-auto">
           <TaskList />
         </div>
 
-        {/* NoteEditor - 45vw */}
-        <div className="w-[45vw] border-r flex flex-col">
+        {/* NoteEditor - 40vw */}
+        <div className="w-[40vw] border-r flex flex-col">
           <NoteEditor />
         </div>
 
         {/* ChatInterface - 35vw */}
         <div className="w-[35vw] flex flex-col">
-          <ChatInterface />
+          <StreamChatInterface/>
         </div>
       </div>
 

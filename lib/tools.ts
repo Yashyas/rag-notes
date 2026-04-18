@@ -45,12 +45,13 @@ export const agentTools = {
 
   fetchAllNotes: tool({
     description:
-      "Gets all the available note (USE WITH CAUTION, DONT USE UNTIL SPECIFICALLY ASKED FOR ALL NOTES RELATED QUESTIONS.).",
+      "Gets multiple available note (USE WITH CAUTION, DONT USE UNTIL SPECIFICALLY ASKED FOR ALL NOTES RELATED QUESTIONS.).",
     inputSchema: z.object({
       query: z.string().describe("The search query for finding related notes"),
+      topN: z.number().describe("The number of notes you want to retrive on specific topic (SHOULD BE GREATER THAN 3 AND LESS THAN 10)"),
     }),
-    execute: async ({query}) => {
-        const data = await fetchNotes()
+    execute: async ({query,topN}) => {
+        const data = await find_similar_notes(query,topN)
         return data
     }
   }),
