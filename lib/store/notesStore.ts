@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+import { fetchNotes } from "@/app/actions/notes";
+import { create } from "zustand";
 
 export interface Note {
   id: string;
@@ -13,7 +14,7 @@ interface NotesStore {
   notes: Note[];
   selectedNoteId: string | null;
   searchQuery: string;
-  activeMobileTab: 'tasks' | 'notes' | 'chat';
+  activeMobileTab: "tasks" | "notes" | "chat";
   deleteDialogOpen: boolean;
   deleteTargetId: string | null;
 
@@ -28,36 +29,39 @@ interface NotesStore {
   setSearchQuery: (query: string) => void;
 
   // Mobile tab actions
-  setActiveMobileTab: (tab: 'tasks' | 'notes' | 'chat') => void;
+  setActiveMobileTab: (tab: "tasks" | "notes" | "chat") => void;
 
   // Delete dialog actions
   openDeleteDialog: (noteId: string) => void;
   closeDeleteDialog: () => void;
 
+  refreshNotes: () => Promise<void>;
 }
 
-export const useNotesStore = create<NotesStore>((set) => ({
+export const useNotesStore = create<NotesStore>((set, get) => ({
   notes: [
     {
-      id: '1',
-      title: 'Welcome to Notes App',
-      content: 'This is your first note. Click on other notes to view them, or create a new one!',
-      tags: ['welcome', 'tutorial'],
+      id: "1",
+      title: "Welcome to Notes App",
+      content:
+        "This is your first note. Click on other notes to view them, or create a new one!",
+      tags: ["welcome", "tutorial"],
       updatedAt: new Date(),
       createdAt: new Date(),
     },
     {
-      id: '2',
-      title: 'Meeting Notes',
-      content: 'Discussed project timeline and deliverables. Next meeting scheduled for next week.',
-      tags: ['work', 'meeting'],
+      id: "2",
+      title: "Meeting Notes",
+      content:
+        "Discussed project timeline and deliverables. Next meeting scheduled for next week.",
+      tags: ["work", "meeting"],
       updatedAt: new Date(Date.now() - 86400000),
       createdAt: new Date(Date.now() - 86400000),
     },
   ],
   selectedNoteId: null,
-  searchQuery: '',
-  activeMobileTab: 'notes',
+  searchQuery: "",
+  activeMobileTab: "notes",
   deleteDialogOpen: false,
   deleteTargetId: null,
 
@@ -78,7 +82,7 @@ export const useNotesStore = create<NotesStore>((set) => ({
               ...noteData,
               lastUpdated: new Date(),
             }
-          : note
+          : note,
       ),
     })),
 
@@ -106,4 +110,8 @@ export const useNotesStore = create<NotesStore>((set) => ({
       deleteTargetId: null,
     }),
 
+  refreshNotes: async () => {
+    const notes = await fetchNotes();
+    get().setNotes(notes.data ?? []);
+  },
 }));

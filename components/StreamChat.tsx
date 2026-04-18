@@ -12,9 +12,36 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useNotesStore } from "@/lib/store/notesStore";
+
+const MODELS = [
+  {
+    id: "meta-llama/llama-4-scout-17b-16e-instruct",
+    label: "Llama 4 Scout",
+    reasoning: false,
+  },
+  { id: "openai/gpt-oss-120b", label: "GPT-oss 120B", reasoning: true },
+  { id: "openai/gpt-oss-20b", label: "GPT-oss 20B", reasoning: true },
+  { id: "qwen/qwen3-32b", label: "Qwen3 32B", reasoning: true },
+  { id: "llama-3.3-70b-versatile", label: "Llama-3.3 70B", reasoning: false },
+];
 
 export function StreamChatInterface() {
-  const { messages, sendMessage, status, stop, error } = useChat();
+  const refreshNotes = useNotesStore((state) => state.refreshNotes);
+
+  const [chatKey, setChatKey] = useState(0);
+
+  const { messages, sendMessage, status, stop, error } = useChat({
+    id: String(chatKey),
+    onFinish: ({ message }) => {
+      const didMutate = message.parts.some(
+        (p) => p.type === "tool-createNote" || p.type === "tool-updateNote",
+      );
+      if (didMutate) refreshNotes();
+    },
+  });
+
+  const [selectedModel, setSelectedModel] = useState(MODELS[0].id);
 
   const [input, setInput] = useState("");
 
@@ -33,12 +60,40 @@ export function StreamChatInterface() {
     if (!input.trim() || isBusy) return;
 
     // SDK uses sendMessage
-    sendMessage({ text: input });
+    sendMessage({ text: input }, { body: { model: selectedModel } });
     setInput("");
+  };
+
+  const handleModelChange = (newModel: string) => {
+    setSelectedModel(newModel);
+    setChatKey((prev) => prev + 1);
   };
 
   return (
     <div className="flex flex-col h-full bg-background overflow-y-auto">
+      {/* model selector  */}
+      <div className="p-3 border-b flex items-center gap-2 ">
+        <label className="text-base text-muted-foreground">Model</label>
+        <select
+          value={selectedModel}
+          onChange={(e) => handleModelChange(e.target.value)}
+          disabled={isBusy}
+          className="text-base border-2 border-ring rounded-md px-2 py-1 bg-background"
+        >
+          {MODELS.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label} {m.reasoning ? "[Reason]" : ""}
+            </option>
+          ))}
+        </select>
+        <Button
+          onClick={() => setChatKey((prev) => prev + 1)}
+          className="ml-auto text-base"
+        >
+          Clear
+        </Button>
+      </div>
+
       <ScrollArea className="flex-1 p-4 ">
         <div className="space-y-6 max-w-3xl mx-auto">
           {messages.length === 0 && (
@@ -149,7 +204,7 @@ export function StreamChatInterface() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={isBusy ? "AI is typing..." : "Ask about your notes..."}
-            className="flex-1"
+            className="flex-1 !text-base"
           />
           {isBusy ? (
             <Button type="button" variant="destructive" onClick={() => stop()}>
